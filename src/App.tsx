@@ -70,13 +70,31 @@ function App() {
   };
 
   const onDeleteNote = (id: string) => {
-    setNotes(prevNotes => {
-      return prevNotes.filter(note => note.id !== id)
-    })
-  }
+    setNotes((prevNotes) => {
+      return prevNotes.filter((note) => note.id !== id);
+    });
+  };
 
   const addTag = (tag: Tag) => {
     setTags((prev) => [...prev, tag]);
+  };
+
+  const updateTag = (id: string, label: string) => {
+    setTags((prevTags) => {
+      return prevTags.map((tag) => {
+        if (tag.id === id) {
+          return { ...tag, label };
+        } else {
+          return tag;
+        }
+      });
+    });
+  };
+
+  const deleteTag = (id: string) => {
+    setTags((prevTags) => {
+      return prevTags.filter((tag) => tag.id !== id);
+    });
   };
 
   return (
@@ -84,7 +102,14 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<NoteList availableTags={tags} notes={notesWithTags} />}
+          element={
+            <NoteList
+              availableTags={tags}
+              notes={notesWithTags}
+              deleteTag={deleteTag}
+              updateTag={updateTag}
+            />
+          }
         />
         <Route
           path="/new"
@@ -98,7 +123,7 @@ function App() {
         />
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/:id" element={<NoteLayout notes={notesWithTags} />}>
-          <Route index element={<Note onDeleteNote={onDeleteNote}/>} />
+          <Route index element={<Note onDeleteNote={onDeleteNote} />} />
           <Route
             path="edit"
             element={
